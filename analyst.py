@@ -10,13 +10,19 @@ def compare(api_key: str, client_company: str, profiles: dict, analyses: list) -
     joined = "\n\n---\n\n".join(f"## {name}\n{prof}" for name, prof in profiles.items())
     wants = ", ".join(analyses) if analyses else "general comparison"
     prompt = (
-        f'You are a market research analyst writing for "{client_company}".\n\n'
+        f'You are a senior market research analyst writing for "{client_company}".\n\n'
         f"Competitor profiles:\n{joined}\n\n"
-        f"Write a comparison covering: {wants}.\n"
+        f"Write a comparison covering: {wants}.\n\n"
+        "STRICT RULES:\n"
+        "- Ground EVERY claim in the profiles above — cite the concrete evidence (price, feature, quote).\n"
+        "- The comparison table must contain concrete values, never adjectives "
+        "(bad: 'affordable'; good: '$29/mo starter plan').\n"
+        "- No generic advice like 'improve marketing'. Each opportunity must name the SPECIFIC gap "
+        "and WHICH competitor leaves it open.\n"
+        "- If two competitors look identical on some dimension, say so plainly instead of inventing differences.\n\n"
         "Include:\n"
         "- A markdown comparison table (Company | What they sell | Pricing | Key strength | Key weakness)\n"
-        f"- 3 concrete opportunities for {client_company} (gaps competitors leave open)\n"
-        "- 3 threats to watch\n"
-        "Keep it practical and specific. Never invent facts not present in the profiles."
+        f"- 3 concrete opportunities for {client_company}, each tied to an observed gap\n"
+        "- 3 specific threats to watch, each tied to an observed competitor move\n"
     )
     return client.models.generate_content(model=MODEL, contents=prompt).text

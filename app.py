@@ -7,7 +7,7 @@ paying client (see README.md).
 import os
 import streamlit as st
 
-from scout import fetch_website_text, summarize_competitor
+from scout import fetch_site_pages, search_mentions, summarize_competitor
 from analyst import compare
 from reporter import markdown_to_pdf
 
@@ -71,10 +71,14 @@ if st.button("Run analysis", type="primary"):
     profiles = {}
     prog = st.progress(0, text="Scouting competitors…")
     for idx, (name, url) in enumerate(competitors):
-        with st.spinner(f"Scouting {name}…"):
+        with st.spinner(f"Scouting {name} (site + public mentions)…"):
             try:
-                text = fetch_website_text(url)
-                profiles[name] = summarize_competitor(api_key, name, text)
+                text = fetch_site_pages(url)
+                if not text:
+                    st.warning(f"Could not read {name}'s website — skipping.")
+                    continue
+                mentions = search_mentions(name)
+                profiles[name] = summarize_competitor(api_key, name, text, mentions)
             except Exception as e:  # noqa: BLE001 — show friendly error per competitor
                 st.warning(f"Could not scout {name}: {e}")
         prog.progress((idx + 1) / (len(competitors) + 1), text="Scouting competitors…")
