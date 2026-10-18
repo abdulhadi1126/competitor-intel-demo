@@ -1,0 +1,6 @@
+streamlit
+google-genai
+beautifulsoup4
+lxml
+requests
+fpdf2
