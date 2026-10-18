@@ -3,6 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 from google import genai
 
+MODEL = "gemini-3.8-flash"  # if Google retires this one day, change the name here
+
 
 def fetch_website_text(url: str, max_chars: int = 12000) -> str:
     """Download a page and return its readable text (no menus/scripts)."""
@@ -33,4 +35,4 @@ def summarize_competitor(api_key: str, company_name: str, website_text: str) -> 
         f"Website text:\n{website_text}\n\n"
         "Keep it factual. Never invent prices, features, or facts not present in the text."
     )
-    return client.models.generate_content(model="gemini-2.0-flash", contents=prompt).text
+    return client.models.generate_content(model=MODEL, contents=prompt).text

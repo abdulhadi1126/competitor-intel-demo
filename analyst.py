@@ -1,6 +1,8 @@
 """ANALYST agent: compares scouted competitors against the client's company."""
 from google import genai
 
+MODEL = "gemini-3.8-flash"  # if Google retires this one day, change the name here
+
 
 def compare(api_key: str, client_company: str, profiles: dict, analyses: list) -> str:
     """profiles: {competitor_name: profile_text}. Returns a markdown report."""
@@ -17,4 +19,4 @@ def compare(api_key: str, client_company: str, profiles: dict, analyses: list) -
         "- 3 threats to watch\n"
         "Keep it practical and specific. Never invent facts not present in the profiles."
     )
-    return client.models.generate_content(model="gemini-2.0-flash", contents=prompt).text
+    return client.models.generate_content(model=MODEL, contents=prompt).text
